@@ -1,0 +1,166 @@
+name: Verify external CAI enrollment
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "submissions/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: external-cai-enrollment-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify signed enrollment envelope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Verify scope and signed envelope
+        env:
+          PINNED_BEACON_SHA: 2e53433df6ec1cdfc445b8fceaff81a16c541b33
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_REPOSITORY: ${{ github.event.pull_request.base.repo.full_name }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          remote="https://github.com/poccahin/lifepp-external-quorum-beacon.git"
+
+          if [[ "${BASE_REPOSITORY}" != "poccahin/lifepp-external-quorum-beacon" ||
+                "${BASE_REF}" != "main" ]]; then
+            echo "Enrollment verification is restricted to the canonical main branch." >&2
+            exit 1
+          fi
+
+          if [[ ! "${BASE_SHA}" =~ ^[0-9a-f]{40}$ ||
+                ! "${HEAD_SHA}" =~ ^[0-9a-f]{40}$ ||
+                ! "${PR_NUMBER}" =~ ^[0-9]+$ ]]; then
+            echo "Invalid pull request identity binding." >&2
+            exit 1
+          fi
+
+          git init --bare --quiet trusted.git
+          git -C trusted.git fetch \
+            --no-tags \
+            "${remote}" \
+            refs/heads/main
+          git -C trusted.git cat-file -e "${PINNED_BEACON_SHA}^{commit}"
+          git -C trusted.git merge-base --is-ancestor \
+            "${PINNED_BEACON_SHA}" \
+            FETCH_HEAD
+
+          mkdir trusted
+          git -C trusted.git show \
+            "${PINNED_BEACON_SHA}:verify-enrollment-beacon.mjs" \
+            > trusted/verify-enrollment-beacon.mjs
+          git -C trusted.git show \
+            "${PINNED_BEACON_SHA}:EXTERNAL_CAI_ENROLLMENT_REQUEST.json" \
+            > trusted/EXTERNAL_CAI_ENROLLMENT_REQUEST.json
+
+          baseline_result="$(node trusted/verify-enrollment-beacon.mjs)"
+          node -e '
+            const result = JSON.parse(process.argv[1]);
+            if (result.valid !== true ||
+                result.response_verified !== false ||
+                result.authority_established !== false) {
+              throw new Error("FAIL_CLOSED_BASELINE_VERIFIER_RESULT");
+            }
+          ' "${baseline_result}"
+
+          git init --bare --quiet candidate.git
+          git -C candidate.git remote add origin "${remote}"
+          git -C candidate.git config remote.origin.promisor true
+          git -C candidate.git config remote.origin.partialclonefilter blob:none
+          git -C candidate.git -c protocol.version=2 fetch \
+            --no-tags \
+            --depth=1 \
+            --filter=blob:none \
+            origin \
+            "refs/pull/${PR_NUMBER}/head"
+
+          [[ "$(git -C candidate.git rev-parse FETCH_HEAD)" == "${HEAD_SHA}" ]]
+
+          git -C candidate.git -c protocol.version=2 fetch \
+            --no-tags \
+            --depth=1 \
+            --filter=blob:none \
+            origin \
+            "${BASE_SHA}"
+
+          submission_path="$(
+            git -C candidate.git diff \
+              --name-only \
+              --no-renames \
+              -z \
+              "${BASE_SHA}" \
+              "${HEAD_SHA}" \
+              | node -e '
+                  const {readFileSync} = require("node:fs");
+                  const input = readFileSync(0);
+                  const paths = input.subarray(0, input.length - (input.at(-1) === 0 ? 1 : 0))
+                    .toString("utf8")
+                    .split("\0")
+                    .filter(Boolean)
+                    .sort();
+                  if (paths.length !== 1) {
+                    console.error("Exactly one changed submission file is required.");
+                    process.exit(1);
+                  }
+                  const path = paths[0];
+                  if (!Buffer.from(path, "utf8").equals(
+                    input.subarray(0, input.length - (input.at(-1) === 0 ? 1 : 0)))) {
+                    console.error("Submission path must be canonical UTF-8.");
+                    process.exit(1);
+                  }
+                  if (!/^submissions\/[A-Za-z0-9._-]+\.json$/.test(path)) {
+                    console.error("Submission path is outside the allowed namespace.");
+                    process.exit(1);
+                  }
+                  process.stdout.write(path);
+                '
+          )"
+
+          object_mode="$(
+            git -C candidate.git ls-tree "${HEAD_SHA}" -- "${submission_path}" \
+              | awk '{print $1}'
+          )"
+          if [[ "${object_mode}" != "100644" ]]; then
+            echo "Submission must be a regular, non-executable Git blob." >&2
+            exit 1
+          fi
+
+          object_id="$(
+            git -C candidate.git rev-parse "${HEAD_SHA}:${submission_path}"
+          )"
+          size="$(git -C candidate.git cat-file -s "${object_id}")"
+          if [[ ! "${size}" =~ ^[0-9]+$ ]] || (( size > 131072 )); then
+            echo "Submission exceeds the 131072-byte limit." >&2
+            exit 1
+          fi
+
+          candidate="$(mktemp)"
+          trap 'rm -f "${candidate}"' EXIT
+          git -C candidate.git cat-file blob "${object_id}" > "${candidate}"
+
+          result="$(
+            node trusted/verify-enrollment-beacon.mjs "${candidate}"
+          )"
+
+          node -e '
+            const result = JSON.parse(process.argv[1]);
+            if (result.valid !== true ||
+                result.response_verified !== true ||
+                result.authority_established !== false) {
+              throw new Error("FAIL_CLOSED_VERIFIER_RESULT");
+            }
+          ' "${result}"
+
+          printf '%s\n' "${result}"

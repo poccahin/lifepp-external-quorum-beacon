@@ -1,0 +1,54 @@
+{
+  "schema": "lifepp.external-cai-enrollment-intake-conformance.v1",
+  "generated_at": "2026-08-14T03:24:00+08:00",
+  "evidence_class": "LOCAL_TRANSPORT_CONFORMANCE",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "pinned_beacon_commit": "2e53433df6ec1cdfc445b8fceaff81a16c541b33",
+  "workflow_security": {
+    "github_token_permissions": [
+      "contents:read",
+      "pull-requests:read"
+    ],
+    "applicant_worktree_checked_out": false,
+    "applicant_code_executed": false,
+    "trusted_verifier_loaded_from_pinned_commit": true,
+    "trusted_request_loaded_from_pinned_commit": true,
+    "accepted_path_pattern": "^submissions/[A-Za-z0-9._-]+\\.json$",
+    "accepted_git_object_mode": "100644",
+    "maximum_blob_bytes": 131072,
+    "rename_detection_disabled": true,
+    "authority_established_by_workflow": false
+  },
+  "exact_workflow_test_matrix": {
+    "valid_signed_envelope": "PASS_ACCEPTED_WITH_AUTHORITY_FALSE",
+    "tampered_signature": "PASS_REJECTED",
+    "extra_changed_path": "PASS_REJECTED",
+    "symlink_submission": "PASS_REJECTED",
+    "oversize_submission": "PASS_REJECTED",
+    "rename_smuggling": "PASS_REJECTED",
+    "executable_submission": "PASS_REJECTED"
+  },
+  "determinism": {
+    "consecutive_structural_test_runs_byte_identical": true,
+    "test_result_sha256": "sha256:a56caa3979a16faff6c51377eb479c87fb0ae24388ef5cae064bec33a73308ac"
+  },
+  "syntax_and_integrity": {
+    "yaml_parse": "PASS",
+    "extracted_shell_parse": "PASS",
+    "original_sha256sums": "PASS",
+    "baseline_verifier": "PASS_AUTHORITY_FALSE",
+    "secret_pattern_scan": "PASS"
+  },
+  "authority": {
+    "committee_signature_count": 0,
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "autonomous_merge_authorized": false,
+    "production_deployment_authorized": false,
+    "production_finality_claimed": false
+  },
+  "limitations": [
+    "This record is local transport certification, not an independent security audit.",
+    "A passing enrollment workflow validates envelope integrity only.",
+    "Committee admission and independence attestation remain separate fail-closed protocol decisions."
+  ]
+}
