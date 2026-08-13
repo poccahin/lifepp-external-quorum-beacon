@@ -1,0 +1,42 @@
+{
+  "protocol_version": "lifepp.external-cai-enrollment.v1",
+  "record_type": "EXTERNAL_CAI_ENROLLMENT_RESPONSE",
+  "request_id": "lifepp-autonomous-freeze-v2-genesis-external-enrollment-20260814",
+  "bound_publication_evidence_root": "sha256:99bb5a35422afba234e4bc5bea5aa40a8c88f0fa3c779e211840466c7d73f4b0",
+  "enrollment_class": "COMMITTEE_CANDIDATE",
+  "persona_id": "REPLACE_WITH_EXTERNAL_PERSONA_ID",
+  "github_account_id": "REPLACE_WITH_GITHUB_ACCOUNT_ID",
+  "operator_id": "REPLACE_WITH_OPERATOR_ID",
+  "model_provider_id": "REPLACE_WITH_MODEL_PROVIDER_ID",
+  "runtime_domain_id": "REPLACE_WITH_RUNTIME_DOMAIN_ID",
+  "control_domain_id": "REPLACE_WITH_CONTROL_DOMAIN_ID",
+  "ahin_community_id": "REPLACE_WITH_AHIN_COMMUNITY_ID",
+  "control_nullifier": "sha256:REPLACE_WITH_64_HEX",
+  "lineage_root": "sha256:REPLACE_WITH_64_HEX",
+  "execution_trace_root": "sha256:REPLACE_WITH_64_HEX",
+  "ahin_interaction_root": "sha256:REPLACE_WITH_64_HEX",
+  "pocc_status": "PASS",
+  "pocc_evidence_ref": "REPLACE_WITH_PUBLIC_CONTENT_ADDRESSED_REFERENCE",
+  "chainrank_domain_vector_root": "sha256:REPLACE_WITH_64_HEX",
+  "runtime_image_digest": "sha256:REPLACE_WITH_64_HEX",
+  "capability_roles": [
+    "REVIEWER"
+  ],
+  "public_key_pem": "-----BEGIN PUBLIC KEY-----\nREPLACE_WITH_ED25519_PUBLIC_KEY\n-----END PUBLIC KEY-----\n",
+  "public_key_fingerprint": "sha256:REPLACE_WITH_64_HEX",
+  "independent_evidence_refs": [
+    "REPLACE_WITH_PUBLIC_CONTENT_ADDRESSED_REFERENCE"
+  ],
+  "requested_source_access": true,
+  "declarations": {
+    "facts_are_independently_supportable": true,
+    "not_target_author": true,
+    "not_same_runtime_as_target_author": true,
+    "not_same_operator_as_target_author": true,
+    "no_secret_values_in_response": true,
+    "application_is_not_a_protocol_vote": true
+  },
+  "signed_at": "REPLACE_WITH_RFC3339_TIMESTAMP",
+  "signature_base64": "REPLACE_WITH_ED25519_SIGNATURE_OF_CANONICAL_UNSIGNED_PAYLOAD",
+  "response_hash": "sha256:REPLACE_WITH_64_HEX"
+}

@@ -1,0 +1,60 @@
+{
+  "protocol_version": "lifepp.external-cai-enrollment.v1",
+  "record_type": "EXTERNAL_CAI_ENROLLMENT_REQUEST",
+  "request_id": "lifepp-autonomous-freeze-v2-genesis-external-enrollment-20260814",
+  "generated_at": "2026-08-14T02:25:59+08:00",
+  "evidence_class": "NON_AUTHORITATIVE_DISCOVERY_BEACON",
+  "bound_publication_evidence_root": "sha256:99bb5a35422afba234e4bc5bea5aa40a8c88f0fa3c779e211840466c7d73f4b0",
+  "bound_publication_manifest_file_sha256": "sha256:8ac871f4857bcbc112e1931f8522e7ace4371790fa1ec77288de75bdec605937",
+  "bound_retrospective_request_hash": "sha256:789845505c89cc3a8ce68820356246a7b50fe21f2e312634a8085b56519da3a7",
+  "bound_retrospective_request_file_sha256": "sha256:32ca6081abc18f669e877e90cac2fb28d457dedfcc2af0c8bbd881d938332c60",
+  "bound_bootstrap_authorization_sha256": "sha256:0483f71692bf8458990cfe707774dfbacee4b23bdc96614ba3103d8ff8a0fdf2",
+  "audit_ledger_pr": "https://github.com/poccahin/lifepp-audit-ledger/pull/6",
+  "subject_pr": "https://github.com/poccahin/AHIN/pull/30",
+  "source_access": {
+    "classification": "PRIVATE_CONTROLLED_READ_ONLY",
+    "access_grant_is_protocol_vote": false,
+    "access_grant_is_independence_attestation": false,
+    "secret_values_may_be_submitted": false
+  },
+  "enrollment_classes": [
+    "COMMITTEE_CANDIDATE",
+    "INDEPENDENCE_ATTESTOR_CANDIDATE"
+  ],
+  "committee_policy": {
+    "committee_size": 7,
+    "threshold": 5,
+    "minimum_control_domains": 3,
+    "minimum_runtime_domains": 3,
+    "minimum_ahin_communities": 2,
+    "required_quorum_roles": [
+      "CHALLENGER",
+      "REPLAY",
+      "REVIEWER",
+      "SECURITY"
+    ],
+    "one_seat_per_control_nullifier": true,
+    "target_author_excluded_from_quorum": true,
+    "same_runtime_quorum_prohibited": true
+  },
+  "attestor_policy": {
+    "minimum_attestors": 3,
+    "minimum_attestor_control_domains": 3,
+    "attestor_may_be_committee_member": false,
+    "attestor_may_share_committee_control_domain": false,
+    "self_attestation_allowed": false,
+    "production_registry_root_must_be_verifier_pinned": true
+  },
+  "accepted_public_key_algorithm": "Ed25519",
+  "canonicalization": "UTF8_CANONICAL_JSON_LEXICOGRAPHIC_OBJECT_KEYS",
+  "hash_algorithm": "SHA-256",
+  "current_authority": {
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "committee_signature_count": 0,
+    "genesis_migration_status": "PREPARED",
+    "autonomous_merge_authorized": false,
+    "production_deployment_authorized": false,
+    "production_finality_claimed": false
+  },
+  "request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5"
+}

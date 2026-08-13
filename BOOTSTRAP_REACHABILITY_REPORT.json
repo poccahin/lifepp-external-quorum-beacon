@@ -1,0 +1,48 @@
+{
+  "schema": "lifepp.external-quorum-bootstrap-reachability.v1",
+  "generated_at": "2026-08-14T02:25:59+08:00",
+  "evidence_class": "LOCAL_BOOTSTRAP_DIAGNOSTIC",
+  "bound_publication_evidence_root": "sha256:99bb5a35422afba234e4bc5bea5aa40a8c88f0fa3c779e211840466c7d73f4b0",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "verifier_findings": {
+    "genesis_policy_exact_5_of_7": true,
+    "committee_member_requires_pocc_pass": true,
+    "committee_member_requires_ahin_interaction_root": true,
+    "committee_member_requires_chainrank_domain_vector_root": true,
+    "independence_attestation_requires_external_active_attestor": true,
+    "production_attestor_registry_must_be_verifier_pinned": true,
+    "minimum_external_attestors": 3,
+    "minimum_external_attestor_control_domains": 3,
+    "bootstrap_is_mathematically_reachable_with_pre_v2_evidence": true
+  },
+  "observed_transport_state_before_beacon": {
+    "audit_repository_visibility": "PRIVATE",
+    "audit_repository_known_collaborators": [
+      "poccahin"
+    ],
+    "external_source_read_path": "NOT_ESTABLISHED",
+    "public_enrollment_surface": "NOT_ESTABLISHED",
+    "external_committee_candidates_observed": 0,
+    "external_independence_attestors_observed": 0,
+    "valid_committee_signatures_observed": 0,
+    "github_cli_identity": "UNVERIFIABLE_KEYRING_INVALID_AND_API_EOF",
+    "github_connected_app_read_path": "AVAILABLE",
+    "candidate_source_publicly_disclosed": false
+  },
+  "remediation": {
+    "action": "PUBLISH_NON_AUTHORITATIVE_PUBLIC_ENROLLMENT_BEACON",
+    "source_visibility_change": false,
+    "protocol_semantic_change": false,
+    "committee_authority_granted": false,
+    "attestor_authority_granted": false,
+    "repository_access_counts_as_vote": false,
+    "same_runtime_quorum_allowed": false
+  },
+  "authority": {
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "genesis_migration_status": "PREPARED",
+    "autonomous_merge_authorized": false,
+    "production_deployment_authorized": false,
+    "production_finality_claimed": false
+  }
+}
