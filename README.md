@@ -57,6 +57,12 @@ trusted-attestor registry root.
 6. Publish the response in a comment on this beacon or provide a public,
    content-addressed URL in a comment. Do not post private keys or secrets.
 
+For the preferred fork-PR path, set `github_account_id` to the immutable
+numeric GitHub database ID of the PR author, encoded as a string, and add only
+`submissions/<persona_id>.json`. The trusted aggregate collector rejects
+project-owned and target-author PRs and binds accepted envelopes to GitHub PR
+metadata. Its readiness artifact remains non-authoritative.
+
 For an independence-attestor application, set `enrollment_class` to
 `INDEPENDENCE_ATTESTOR_CANDIDATE`, include `INDEPENDENCE_ATTESTOR` in
 `capability_roles`, and retain independently verifiable evidence references.

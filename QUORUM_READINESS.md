@@ -13,6 +13,22 @@ Run the deterministic simulation and negative-control matrix with:
 node tools/test-quorum-readiness.mjs
 ```
 
+Open fork PRs are aggregated by the read-only workflow using:
+
+```bash
+node tools/materialize-open-enrollment-prs.mjs ...
+node tools/build-open-enrollment-readiness.mjs ...
+```
+
+The collector binds each signed envelope to the immutable GitHub database ID
+of its PR author and to `submissions/<persona_id>.json`. It reads untrusted PRs
+as Git objects and never checks out or executes applicant content. Run its
+local Git-object and adversarial matrix with:
+
+```bash
+node tools/test-open-enrollment-collector.mjs
+```
+
 The checker first hash-pins and runs the single-application verifier on every input.
 It then searches for a claimed structural candidate set containing:
 

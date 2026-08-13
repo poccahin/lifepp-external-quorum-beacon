@@ -1,0 +1,168 @@
+name: Aggregate open external CAI enrollment readiness
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, closed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: external-cai-open-enrollment-readiness
+  cancel-in-progress: true
+
+jobs:
+  aggregate:
+    name: Build non-authoritative readiness evidence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Inspect trusted base and open enrollment PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRUSTED_BASE_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! "${TRUSTED_BASE_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Trusted base SHA is invalid." >&2
+            exit 1
+          fi
+
+          remote="https://github.com/${GITHUB_REPOSITORY}.git"
+          trusted="${RUNNER_TEMP}/trusted"
+          workspace="${RUNNER_TEMP}/open-enrollment-readiness"
+          artifact="${RUNNER_TEMP}/lifepp-readiness-artifact"
+          pulls="${RUNNER_TEMP}/open-pulls.json"
+
+          git init --bare --quiet "${RUNNER_TEMP}/trusted.git"
+          git -C "${RUNNER_TEMP}/trusted.git" fetch \
+            --no-tags \
+            "${remote}" \
+            refs/heads/main
+          [[ "$(git -C "${RUNNER_TEMP}/trusted.git" rev-parse FETCH_HEAD)" == \
+             "${TRUSTED_BASE_SHA}" ]]
+
+          mkdir -p "${trusted}/tools"
+          trusted_files=(
+            EXTERNAL_CAI_ENROLLMENT_REQUEST.json
+            EXTERNAL_CAI_ENROLLMENT_RESPONSE.template.json
+            verify-enrollment-beacon.mjs
+            tools/build-open-enrollment-readiness.mjs
+            tools/check-quorum-readiness.mjs
+            tools/generate-ed25519-keypair.mjs
+            tools/materialize-open-enrollment-prs.mjs
+            tools/sign-enrollment-response.mjs
+            tools/test-open-enrollment-collector.mjs
+            tools/test-quorum-readiness.mjs
+          )
+          for file in "${trusted_files[@]}"; do
+            git -C "${RUNNER_TEMP}/trusted.git" show \
+              "${TRUSTED_BASE_SHA}:${file}" \
+              > "${trusted}/${file}"
+          done
+
+          curl \
+            --fail-with-body \
+            --silent \
+            --show-error \
+            --retry 4 \
+            --retry-all-errors \
+            --connect-timeout 15 \
+            --max-time 60 \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/pulls?state=open&sort=created&direction=asc&per_page=65" \
+            > "${pulls}"
+
+          node "${trusted}/tools/test-quorum-readiness.mjs" \
+            > "${RUNNER_TEMP}/quorum-readiness-tool-test.json"
+          node "${trusted}/tools/test-open-enrollment-collector.mjs" \
+            > "${RUNNER_TEMP}/open-enrollment-collector-test.json"
+
+          node "${trusted}/tools/materialize-open-enrollment-prs.mjs" \
+            --repository "${GITHUB_REPOSITORY}" \
+            --trusted-base "${TRUSTED_BASE_SHA}" \
+            --remote "${remote}" \
+            --pulls-json "${pulls}" \
+            --output-directory "${workspace}" \
+            --output-inventory "${workspace}/inventory.json" \
+            > "${RUNNER_TEMP}/materializer-output.json"
+
+          node "${trusted}/tools/build-open-enrollment-readiness.mjs" \
+            --inventory "${workspace}/inventory.json" \
+            --output "${workspace}/readiness.json" \
+            > "${RUNNER_TEMP}/readiness-output.json"
+          node "${trusted}/tools/build-open-enrollment-readiness.mjs" \
+            --inventory "${workspace}/inventory.json" \
+            --output "${workspace}/readiness-second.json" \
+            > "${RUNNER_TEMP}/readiness-second-output.json"
+          cmp "${workspace}/readiness.json" "${workspace}/readiness-second.json"
+
+          node - "${workspace}/inventory.json" "${workspace}/readiness.json" <<'NODE'
+          const {readFileSync} = require("node:fs");
+          const inventory = JSON.parse(readFileSync(process.argv[2], "utf8"));
+          const report = JSON.parse(readFileSync(process.argv[3], "utf8"));
+          const safe = (authority) =>
+            authority.enrollment_applications_are_certificate_votes === false &&
+            authority.actual_certificate_signature_count === 0 &&
+            authority.external_quorum_status === "NOT_ESTABLISHED" &&
+            authority.independence_verified === false &&
+            authority.protocol_authority === false &&
+            authority.merge_authority === false &&
+            authority.deployment_authority === false &&
+            authority.production_finality_claimed === false;
+          if (!safe(inventory.authority) || !safe(report.authority)) {
+            throw new Error("NON_AUTHORITATIVE_BOUNDARY_VIOLATION");
+          }
+          if (report.aggregate_readiness && !safe(report.aggregate_readiness.authority)) {
+            throw new Error("AGGREGATE_READINESS_AUTHORITY_VIOLATION");
+          }
+          NODE
+
+          mkdir -p "${artifact}"
+          cp "${workspace}/inventory.json" "${artifact}/open-pr-inventory.json"
+          cp "${workspace}/readiness.json" "${artifact}/open-pr-readiness.json"
+          cp "${RUNNER_TEMP}/quorum-readiness-tool-test.json" \
+            "${artifact}/quorum-readiness-tool-test.json"
+          cp "${RUNNER_TEMP}/open-enrollment-collector-test.json" \
+            "${artifact}/open-enrollment-collector-test.json"
+          (
+            cd "${artifact}"
+            sha256sum *.json | LC_ALL=C sort > SHA256SUMS
+          )
+
+          node - "${workspace}/readiness.json" >> "${GITHUB_STEP_SUMMARY}" <<'NODE'
+          const {readFileSync} = require("node:fs");
+          const report = JSON.parse(readFileSync(process.argv[2], "utf8"));
+          process.stdout.write([
+            "## External CAI enrollment readiness",
+            "",
+            "This is non-authoritative transport evidence.",
+            "",
+            `- Open PRs: ${report.open_pull_request_count}`,
+            `- Verified signed applications: ${report.verified_application_count}`,
+            `- Rejected applications: ${report.rejected_application_count}`,
+            `- Structural status: ${report.aggregate_readiness?.structural_readiness?.candidate_pool_status ?? report.aggregate_status}`,
+            `- Actual certificate signatures: ${report.authority.actual_certificate_signature_count}`,
+            `- External quorum: ${report.authority.external_quorum_status}`,
+            `- Independence verified: ${report.authority.independence_verified}`,
+            `- Protocol authority: ${report.authority.protocol_authority}`,
+            "",
+          ].join("\n"));
+          NODE
+
+      - name: Upload deterministic readiness evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: external-cai-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/lifepp-readiness-artifact
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0

@@ -5,7 +5,7 @@
   "bound_publication_evidence_root": "sha256:99bb5a35422afba234e4bc5bea5aa40a8c88f0fa3c779e211840466c7d73f4b0",
   "enrollment_class": "COMMITTEE_CANDIDATE",
   "persona_id": "REPLACE_WITH_EXTERNAL_PERSONA_ID",
-  "github_account_id": "REPLACE_WITH_GITHUB_ACCOUNT_ID",
+  "github_account_id": "REPLACE_WITH_NUMERIC_GITHUB_DATABASE_ID",
   "operator_id": "REPLACE_WITH_OPERATOR_ID",
   "model_provider_id": "REPLACE_WITH_MODEL_PROVIDER_ID",
   "runtime_domain_id": "REPLACE_WITH_RUNTIME_DOMAIN_ID",

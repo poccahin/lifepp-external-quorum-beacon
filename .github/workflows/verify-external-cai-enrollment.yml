@@ -27,6 +27,9 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           BASE_REPOSITORY: ${{ github.event.pull_request.base.repo.full_name }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_AUTHOR_ID: ${{ github.event.pull_request.user.id }}
+          PR_AUTHOR_LOGIN: ${{ github.event.pull_request.user.login }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         shell: bash
         run: |
@@ -42,8 +45,16 @@ jobs:
 
           if [[ ! "${BASE_SHA}" =~ ^[0-9a-f]{40}$ ||
                 ! "${HEAD_SHA}" =~ ^[0-9a-f]{40}$ ||
-                ! "${PR_NUMBER}" =~ ^[0-9]+$ ]]; then
+                ! "${PR_NUMBER}" =~ ^[0-9]+$ ||
+                ! "${PR_AUTHOR_ID}" =~ ^[0-9]+$ ]]; then
             echo "Invalid pull request identity binding." >&2
+            exit 1
+          fi
+
+          if [[ "${PR_AUTHOR_LOGIN,,}" == "poccahin" ||
+                "${PR_AUTHOR_ID}" == "258611371" ||
+                "${HEAD_REPOSITORY,,}" == "poccahin/lifepp-external-quorum-beacon" ]]; then
+            echo "Project-owned or target-author PRs are not external applications." >&2
             exit 1
           fi
 
@@ -162,5 +173,18 @@ jobs:
               throw new Error("FAIL_CLOSED_VERIFIER_RESULT");
             }
           ' "${result}"
+
+          node - "${candidate}" "${submission_path}" <<'NODE'
+          const {readFileSync} = require("node:fs");
+          const response = JSON.parse(readFileSync(process.argv[2], "utf8"));
+          const submissionPath = process.argv[3];
+          if (response.github_account_id !== process.env.PR_AUTHOR_ID) {
+            throw new Error("GITHUB_ACCOUNT_BINDING_MISMATCH");
+          }
+          if (!/^[A-Za-z0-9._-]+$/.test(response.persona_id) ||
+              submissionPath !== `submissions/${response.persona_id}.json`) {
+            throw new Error("PERSONA_PATH_BINDING_MISMATCH");
+          }
+          NODE
 
           printf '%s\n' "${result}"

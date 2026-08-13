@@ -1,0 +1,102 @@
+{
+  "schema": "lifepp.external-cai-open-enrollment-automation-conformance.v1",
+  "generated_at": "2026-08-14T05:30:00+08:00",
+  "evidence_class": "LOCAL_NON_AUTHORITATIVE_CONFORMANCE",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "pinned_project_owner": {
+    "login": "poccahin",
+    "github_database_id": "258611371",
+    "public_identity_evidence_sha256": "bb4d415edf28f596537d754d38b916ca3b3643ea1891798dedeee2c0acea0a1f"
+  },
+  "pinned_components": {
+    "single_application_verifier_sha256": "ba751fbd9664852f30647668f5e5ff03d189a992b47775e60273c7411f814b44",
+    "aggregate_readiness_checker_sha256": "4c0c04679f0d7da3b5cd16256cac0013665976acc3a44a236a8acff8cea6eeab",
+    "upload_artifact_action": "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+    "upload_artifact_tag": "v6.0.0",
+    "upload_artifact_tag_evidence_sha256": "52af0bdc41c74cbca20b39df6d02256c114c3328cf9c5718a9fb751cb32ee98f"
+  },
+  "validation": {
+    "node_syntax": "PASS",
+    "ruby_yaml_parse": "PASS",
+    "embedded_bash_syntax": "PASS",
+    "baseline_verifier_determinism": "PASS",
+    "aggregate_checker_test": "PASS",
+    "open_pr_collector_test": "PASS",
+    "workflow_boundary_test": "PASS",
+    "zero_applicant_dry_run": "PASS",
+    "actionlint": "UNAVAILABLE",
+    "shellcheck": "UNAVAILABLE"
+  },
+  "test_evidence": {
+    "aggregate_checker_sha256": "0cc4adac661c3ea91cb12b2854b28dbd7c4c3dba1347c8cd44b38e996c27c2e1",
+    "open_pr_collector_sha256": "2736aecb201aa9d5b24bc5af8e94672f46275b919f5d7ad0fcb83a072ea95c87",
+    "workflow_boundary_sha256": "e8ca6798ee07b59d501aecf3c6739fd76868137620839d97c2831539a1d3647a",
+    "zero_applicant_inventory_root": "sha256:6eaf771c6142ab1304ce6647f0ae622df8ace7526d16ac2398f5172846ca7d7a",
+    "zero_applicant_snapshot_root": "sha256:733c97ed7ec408ab7165779d8925b39d95592b855380a16f3d86028d8c86ebf5"
+  },
+  "trusted_transport": {
+    "trusted_base_main_required": true,
+    "head_descendant_of_trusted_base_required": true,
+    "applicant_code_executed": false,
+    "exactly_one_added_regular_json_required": true,
+    "max_application_bytes": 131072,
+    "max_open_pull_requests": 64,
+    "max_verified_applications": 16,
+    "github_author_database_id_bound": true,
+    "persona_id_bound_to_submission_path": true,
+    "project_owner_excluded_by_login_and_database_id": true,
+    "one_application_per_github_database_id": true,
+    "read_only_repository_permissions": true,
+    "repository_mutation_command_present": false,
+    "deterministic_artifact_output": true
+  },
+  "negative_controls": {
+    "invalid_signature_rejected": true,
+    "account_binding_mismatch_rejected": true,
+    "persona_path_mismatch_rejected": true,
+    "draft_pull_request_rejected": true,
+    "multi_path_pull_request_rejected": true,
+    "project_owned_pull_request_rejected": true,
+    "deleted_fork_pull_request_rejected": true,
+    "unrelated_history_rejected": true,
+    "duplicate_response_rejected": true,
+    "duplicate_github_author_rejected": true,
+    "tampered_inventory_rejected": true,
+    "one_operator_quorum_concentration_rejected": true
+  },
+  "simulated_structural_candidate_set": {
+    "valid_signed_applications": 10,
+    "committee_candidates": 7,
+    "independence_attestor_candidates": 3,
+    "structural_readiness_detected": true,
+    "structural_readiness_is_authority": false
+  },
+  "live_state_at_certification": {
+    "public_main_commit": "509cade4b0756dd058cde0a335130a090a81729d",
+    "external_issue_response_count": 0,
+    "external_applicant_pr_count": 0,
+    "verified_external_application_count": 0,
+    "actual_certificate_signature_count": 0,
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "independence_verified": false,
+    "live_refresh_evidence_sha256": "34284418b23ecacd5e176b30bbe31ac7e461edd280cdb8a9267ff1be0b7675f8"
+  },
+  "authority": {
+    "enrollment_applications_are_certificate_votes": false,
+    "actual_certificate_signature_count": 0,
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "independence_verified": false,
+    "protocol_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "production_finality_claimed": false
+  },
+  "limitations": [
+    "A GitHub account binding proves submission provenance, not real-world control independence.",
+    "Declared operator, provider, runtime, community, and control-domain identifiers remain claims until independently attested.",
+    "Workflow artifacts are transport evidence and cannot become committee seats or certificate votes.",
+    "Three genuinely independent external attestors and five canonical retrospective-certificate signatures are still required.",
+    "Remote GitHub Actions parsing and execution are required because actionlint and shellcheck were unavailable locally.",
+    "This conformance record cannot activate migration, merge code, deploy software, or establish production finality."
+  ]
+}
