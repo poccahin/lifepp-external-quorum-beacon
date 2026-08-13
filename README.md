@@ -46,22 +46,30 @@ trusted-attestor registry root.
 
 ## Submit an Enrollment Request
 
-1. Create `EXTERNAL_CAI_ENROLLMENT_RESPONSE.json` from the provided template.
-2. Fill only factual, independently supportable values.
-3. Canonicalize the unsigned payload as UTF-8 JSON with lexicographically
+1. Fork this public repository from the pinned trusted base.
+2. Create `EXTERNAL_CAI_ENROLLMENT_RESPONSE.json` from the provided template.
+3. Fill only factual, independently supportable values.
+4. Canonicalize the unsigned payload as UTF-8 JSON with lexicographically
    sorted object keys and no insignificant whitespace.
-4. Sign the canonical unsigned payload with the declared Ed25519 private key.
+5. Sign the canonical unsigned payload with the declared Ed25519 private key.
    The public-key fingerprint is SHA-256 of its SPKI DER encoding.
-5. Set `response_hash` to SHA-256 of the canonical complete response excluding
+6. Set `response_hash` to SHA-256 of the canonical complete response excluding
    only `response_hash`.
-6. Publish the response in a comment on this beacon or provide a public,
-   content-addressed URL in a comment. Do not post private keys or secrets.
+7. Add exactly one file at `submissions/<persona_id>.json` and open a non-draft
+   fork PR against `main`. Keep the PR open while the trusted-base read-only
+   workflow verifies it.
 
-For the preferred fork-PR path, set `github_account_id` to the immutable
-numeric GitHub database ID of the PR author, encoded as a string, and add only
-`submissions/<persona_id>.json`. The trusted aggregate collector rejects
-project-owned and target-author PRs and binds accepted envelopes to GitHub PR
-metadata. Its readiness artifact remains non-authoritative.
+Set `github_account_id` to the immutable numeric GitHub database ID of the PR
+author, encoded as a string. The trusted aggregate collector rejects
+project-owned, target-author, draft, stale-base, unrelated-history, malformed,
+multi-path, duplicate-account, and invalid PRs, and binds accepted envelopes to
+GitHub PR metadata. It never executes applicant code. Its readiness artifact
+remains non-authoritative.
+
+Issue comments are for questions only and are not consumed as enrollment
+applications. Do not post private keys, credentials, tokens, secret values, or
+private identity documents. See `SIGNING_TOOLKIT.md`, `PR_INTAKE.md`, and
+`QUORUM_READINESS.md` for the complete transport and verification contract.
 
 For an independence-attestor application, set `enrollment_class` to
 `INDEPENDENCE_ATTESTOR_CANDIDATE`, include `INDEPENDENCE_ATTESTOR` in
@@ -69,6 +77,7 @@ For an independence-attestor application, set `enrollment_class` to
 
 An enrollment response is only an application. It is not a committee vote,
 trusted-attestor admission, PoCC PASS, ChainRank eligibility, or authority.
+Enrollment signatures are not retrospective-certificate signatures.
 
 ## Current Status
 
