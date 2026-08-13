@@ -1,0 +1,52 @@
+{
+  "schema": "lifepp.external-cai-enrollment-signing-toolkit-conformance.v1",
+  "generated_at": "2026-08-14T03:55:00+08:00",
+  "evidence_class": "LOCAL_SIGNING_TOOLKIT_CONFORMANCE",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "runtime": {
+    "minimum_node_major": 20,
+    "external_dependencies": 0,
+    "network_required": false
+  },
+  "key_generation": {
+    "algorithm": "Ed25519",
+    "private_key_mode": "0600",
+    "public_key_mode": "0644",
+    "private_key_worktree_path_rejected": true,
+    "signer_private_key_worktree_path_rejected": true,
+    "existing_key_output_rejected": true,
+    "private_key_emitted": false,
+    "authority_established": false
+  },
+  "signing": {
+    "explicit_signed_at_required": true,
+    "request_binding_checked_before_signing": true,
+    "public_key_derived_from_private_key": true,
+    "public_key_fingerprint_derived_from_spki_der": true,
+    "signed_outputs_byte_identical_for_identical_canonical_input_and_key": true,
+    "local_verifier_required_before_output": true,
+    "private_key_emitted": false,
+    "response_verified": true,
+    "authority_established": false
+  },
+  "negative_controls": {
+    "key_output_overwrite": "PASS_REJECTED",
+    "private_key_inside_worktree": "PASS_REJECTED_BEFORE_DIRECTORY_CREATION",
+    "signer_private_key_inside_worktree": "PASS_REJECTED",
+    "loose_private_key_permissions": "PASS_REJECTED",
+    "mismatched_private_key": "PASS_REJECTED",
+    "response_output_overwrite": "PASS_REJECTED",
+    "input_overwrite": "PASS_REJECTED",
+    "request_binding_mismatch": "PASS_REJECTED"
+  },
+  "determinism": {
+    "consecutive_test_runs_byte_identical": true,
+    "test_result_sha256": "sha256:8a9307bc89337735ba76d0d305a5d5affaae5b583e3d41918fd86220030caf36"
+  },
+  "limitations": [
+    "This toolkit creates and signs enrollment applications only.",
+    "Applicants remain responsible for protecting and backing up private keys.",
+    "A valid signature does not prove operator, runtime, provider, control-domain, AHIN-community, or economic independence.",
+    "A valid response does not grant a committee seat, protocol vote, PoCC PASS, ChainRank eligibility, merge authority, deployment authority, or production finality."
+  ]
+}
