@@ -1,0 +1,18 @@
+{
+  "schema": "lifepp.external-cai-quorum-readiness-checker-test.v1",
+  "zero_input_deterministic": true,
+  "valid_application_signatures_verified": 10,
+  "input_order_independent": true,
+  "structural_readiness_detected": true,
+  "structural_readiness_is_authority": false,
+  "actual_certificate_signature_count": 0,
+  "external_quorum_status": "NOT_ESTABLISHED",
+  "independence_verified": false,
+  "duplicate_identity_rejected": true,
+  "unsigned_application_rejected": true,
+  "missing_attestors_fail_closed": true,
+  "operator_quorum_concentration_rejected": true,
+  "bounded_application_count": 16,
+  "tampered_pinned_verifier_rejected": true,
+  "authority_established": false
+}

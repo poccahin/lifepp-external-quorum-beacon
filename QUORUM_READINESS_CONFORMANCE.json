@@ -1,0 +1,60 @@
+{
+  "schema": "lifepp.external-cai-quorum-readiness-conformance.v1",
+  "generated_at": "2026-08-14T04:28:00+08:00",
+  "evidence_class": "LOCAL_NON_AUTHORITATIVE_CONFORMANCE",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "pinned_single_application_verifier_sha256": "ba751fbd9664852f30647668f5e5ff03d189a992b47775e60273c7411f814b44",
+  "checker_sha256": "4c0c04679f0d7da3b5cd16256cac0013665976acc3a44a236a8acff8cea6eeab",
+  "guide_sha256": "0d57bf40e22d6e5a808eba6d60cc845d85978e7d34f9a016db20999967036f91",
+  "portable_test_harness_sha256": "dc3db1032d4fe9448b1b94b3724c2690ff8f7bffc40e18bd4225a602e6cee855",
+  "test_evidence_sha256": "0cc4adac661c3ea91cb12b2854b28dbd7c4c3dba1347c8cd44b38e996c27c2e1",
+  "zero_applicant_snapshot": {
+    "path": "QUORUM_READINESS_ZERO_APPLICANTS.json",
+    "report_sha256": "5fe2f1f0ba3f7bc2b6cf89be7ebd4c271bc3f3d34dfa33d128d263304ed4dc19",
+    "readiness_root": "sha256:85de6ecbe38179d1bdbe103c4deeaa32cf93ac8b676dc4124bacd06e34e67f66",
+    "verified_application_count": 0,
+    "committee_candidate_count": 0,
+    "independence_attestor_candidate_count": 0,
+    "candidate_pool_status": "INSUFFICIENT_COMMITTEE_CANDIDATES"
+  },
+  "determinism": {
+    "three_test_runs_byte_identical": true,
+    "input_order_independent": true,
+    "no_wall_clock_output": true,
+    "canonical_readiness_root": true
+  },
+  "positive_mechanics": {
+    "ten_valid_application_signatures_verified": true,
+    "seven_committee_candidates_detected": true,
+    "five_signer_subset_detected": true,
+    "three_external_attestor_candidates_detected": true,
+    "required_role_coverage_detected": true,
+    "structural_readiness_detected": true,
+    "structural_readiness_is_authority": false
+  },
+  "negative_controls": {
+    "duplicate_identity_rejected": true,
+    "unsigned_application_rejected": true,
+    "missing_attestors_fail_closed": true,
+    "single_operator_quorum_concentration_rejected": true,
+    "application_count_bounded_to_16": true,
+    "tampered_pinned_verifier_rejected": true
+  },
+  "authority": {
+    "enrollment_applications_are_certificate_votes": false,
+    "actual_certificate_signature_count": 0,
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "independence_verified": false,
+    "protocol_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "production_finality_claimed": false
+  },
+  "limitations": [
+    "The checker verifies envelope integrity and claimed structural diversity, not real-world control independence.",
+    "The conformance applicants are simulated test identities and do not occupy committee or attestor seats.",
+    "External evidence must still be verified by independently controlled attestors under a pinned registry.",
+    "Five eligible committee members must still sign the canonical autonomous retrospective certificate.",
+    "This conformance record cannot activate migration, merge code, deploy software, or establish production finality."
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "lifepp.external-cai-quorum-readiness.v1",
+  "evidence_class": "NON_AUTHORITATIVE_STRUCTURAL_READINESS",
+  "bound_enrollment_request_hash": "sha256:af751b72b1a80cdada836f00320e20ac59786eda3240a5ef1a72fe6ea96148c5",
+  "verified_application_count": 0,
+  "verified_application_signature_count": 0,
+  "committee_candidate_count": 0,
+  "independence_attestor_candidate_count": 0,
+  "committee_policy": {
+    "committee_size": 7,
+    "threshold": 5,
+    "minimum_control_domains": 3,
+    "minimum_runtime_domains": 3,
+    "minimum_ahin_communities": 2,
+    "required_roles": [
+      "REVIEWER",
+      "CHALLENGER",
+      "REPLAY",
+      "SECURITY"
+    ],
+    "minimum_external_attestors": 3,
+    "minimum_external_attestor_control_domains": 3
+  },
+  "structural_readiness": {
+    "candidate_pool_status": "INSUFFICIENT_COMMITTEE_CANDIDATES",
+    "structurally_ready": false,
+    "selected_committee_application_hashes": [],
+    "selected_signer_application_hashes": [],
+    "selected_attestor_application_hashes": [],
+    "claimed_control_domain_count": 0,
+    "claimed_runtime_domain_count": 0,
+    "claimed_ahin_community_count": 0,
+    "required_role_coverage_claimed": false
+  },
+  "authority": {
+    "enrollment_applications_are_certificate_votes": false,
+    "actual_certificate_signature_count": 0,
+    "external_quorum_status": "NOT_ESTABLISHED",
+    "independence_verified": false,
+    "protocol_authority": false,
+    "merge_authority": false,
+    "deployment_authority": false,
+    "production_finality_claimed": false
+  },
+  "limitations": [
+    "This checker verifies signed enrollment applications and claimed structural diversity only.",
+    "Unique declared identifiers do not prove independent control, runtime, provider, community, or economic ownership.",
+    "External attestors must still verify control evidence and sign the pinned production registry and member attestations.",
+    "Committee members must still sign a canonical autonomous retrospective certificate that passes the private protocol verifier.",
+    "This report cannot activate migration, authorize merge or deployment, or establish production finality."
+  ],
+  "readiness_root": "sha256:85de6ecbe38179d1bdbe103c4deeaa32cf93ac8b676dc4124bacd06e34e67f66"
+}
